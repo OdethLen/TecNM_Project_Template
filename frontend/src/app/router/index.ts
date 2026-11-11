@@ -1,19 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import { homeRoutes } from '../../modules/home'
+import { authRoutes, authenticatedAuthRoutes } from '../../modules/auth'
+import {
+  clearSessionMarker,
+  hasActiveSession,
+} from '../../shared/utils/sessionCookie'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    ...authRoutes,
     {
       path: '/',
       component: () => import('../layouts/MainLayout.vue'),
-      children: homeRoutes,
-    },
-    {
-      path: '/:pathMatch(.*)*',
-      name: 'not-found',
-      component: () => import('../../shared/views/NotFoundView.vue'),
+      meta: { requiresAuth: true },
+      children: authenticatedAuthRoutes,
     },
   ],
   scrollBehavior(to, _from, savedPosition) {
@@ -21,9 +22,18 @@ const router = createRouter({
   },
 })
 
-router.afterEach((to) => {
-  const title = typeof to.meta.title === 'string' ? to.meta.title : 'Proyecto'
-  document.title = `${title} | TecNM`
+router.beforeEach((to) => {
+  if (!to.meta.requiresAuth) return true
+
+  if (!hasActiveSession()) {
+    clearSessionMarker()
+    return {
+      name: 'login',
+      query: { redirect: to.fullPath },
+    }
+  }
+
+  return true
 })
 
 export default router
