@@ -2,7 +2,7 @@
 
 ## Descripción
 **Proyecto Web Backend** es una API RESTful moderna desarrollada sobre el ecosistema .NET. Su propósito principal es desacoplar y centralizar la lógica de negocio empresarial, la persistencia de datos y los servicios transaccionales para alimentar clientes web frontend mediante una arquitectura modular, escalable y mantenible.
-
+-------
 ---
 
 ## Tecnologías Principales (Nivel Raíz)
